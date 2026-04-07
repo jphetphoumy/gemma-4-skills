@@ -7,10 +7,10 @@
         window['ai_edge_gallery_get_result'] = async (data) => {
             try {
                 const jsonData = JSON.parse(data);
-                const processedData = await webSearch(jsonData.query);
+                const results = await webSearch(jsonData.query);
 
                 return JSON.stringify({
-                    result: processedData
+                    result: results
                 });
             } catch (e) {
                 console.error(e);
@@ -21,7 +21,38 @@
         };
 
         async function webSearch(query) {
-            return query + " processed!";
+            const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const sections = [];
+
+            if (data.AbstractText) {
+                sections.push(`**Summary**\n${data.AbstractText}\nSource: ${data.AbstractURL}`);
+            }
+
+            if (data.Answer) {
+                sections.push(`**Answer**\n${data.Answer}`);
+            }
+
+            const topics = (data.RelatedTopics || [])
+                .filter(t => t.Text && t.FirstURL)
+                .slice(0, 5)
+                .map(t => `- [${t.Text}](${t.FirstURL})`);
+
+            if (topics.length > 0) {
+                sections.push(`**Related Topics**\n${topics.join('\n')}`);
+            }
+
+            if (sections.length === 0) {
+                return `No results found for "${query}". Try rephrasing your search.`;
+            }
+
+            return sections.join('\n\n');
         }
     </script>
 </body>
