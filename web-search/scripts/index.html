@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+
+<body>
+    <script>
+        window['ai_edge_gallery_get_result'] = async (data) => {
+            try {
+                const jsonData = JSON.parse(data);
+                const processedData = await webSearch(jsonData.query);
+
+                return JSON.stringify({
+                    result: processedData
+                });
+            } catch (e) {
+                console.error(e);
+                return JSON.stringify({
+                    error: `Failed: ${e.message}`
+                });
+            }
+        };
+
+        async function webSearch(query) {
+            return text + " processed!";
+        }
+    </script>
+</body>
+
+</html>
