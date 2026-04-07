@@ -7,10 +7,8 @@ description: Search the web using DuckDuckGo to find accurate and up-to-date inf
 
 ## Instructions
 
-Call the `run_js` tool with the following exact parameters:
-- url: should be index.html
-- data: A JSON string with the following field:
-  - query: String. The search query entered by the user. Ex: {"query": "Who is the french president"}
+Call the `run_js` tool using `index.html` and a JSON string for `data` with the following exact fields:
+- **query**: Required. String. The search query entered by the user. (e.g. "Amazon", "DigitalOcean")
 
 ## Important
 
